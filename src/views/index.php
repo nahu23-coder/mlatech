@@ -57,8 +57,15 @@ $destacados = $pdo->query(
              data-category="<?= htmlspecialchars($p['category_name']) ?>"
              data-price="<?= htmlspecialchars($p['price']) ?>"
              data-description="<?= htmlspecialchars($p['description']) ?>"
-             data-icon="<?= htmlspecialchars($p['category_icon']) ?>">
-          <div class="product-thumb"><?= htmlspecialchars($p['category_icon']) ?></div>
+             data-icon="<?= htmlspecialchars($p['category_icon']) ?>"
+             data-image="<?= htmlspecialchars($p['image_url'] ?? '') ?>">
+          <div class="product-thumb<?= !empty($p['image_url']) ? ' has-image' : '' ?>">
+            <?php if (!empty($p['image_url'])): ?>
+              <img src="<?= htmlspecialchars($p['image_url']) ?>" alt="<?= htmlspecialchars($p['name']) ?>" loading="lazy">
+            <?php else: ?>
+              <?= htmlspecialchars($p['category_icon']) ?>
+            <?php endif; ?>
+          </div>
           <div class="card-body">
             <span class="badge badge-stock mb-2"><?= $p['stock'] > 0 ? 'En stock' : 'Sin stock' ?></span>
             <h3 class="h6 card-title mb-1"><?= htmlspecialchars($p['name']) ?></h3>

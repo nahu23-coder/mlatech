@@ -104,3 +104,25 @@ INSERT INTO products (category_id, name, description, price, stock, image_url) V
         'Mousepad XL', '900x400mm, base antideslizante.', 12000.00, 40, NULL),
     ((SELECT id FROM categories WHERE name = 'Accesorios'),
         'Fuente de alimentación 650W 80+ Bronze', 'Certificada, modular semi.', 75000.00, 14, NULL);
+
+UPDATE products SET image_url = '/assets/img/products/ryzen-5-5600.jpg'            WHERE name = 'Procesador Ryzen 5 5600';
+UPDATE products SET image_url = '/assets/img/products/intel-core-i9-13900k.jpg'    WHERE name = 'Procesador Intel Core i9-13900K';
+UPDATE products SET image_url = '/assets/img/products/ryzen-7-7700x.jpg'           WHERE name = 'Procesador Ryzen 7 7700X';
+
+UPDATE products SET image_url = '/assets/img/products/rtx-4060.jpg'               WHERE name = 'Placa de video RTX 4060';
+UPDATE products SET image_url = '/assets/img/products/rtx-4090.jpg'               WHERE name = 'Placa de video RTX 4090';
+UPDATE products SET image_url = '/assets/img/products/rx-7600.jpg'                WHERE name = 'Placa de video RX 7600';
+
+UPDATE products SET image_url = '/assets/img/products/ram-16gb-ddr4.jpg'          WHERE name = 'Memoria RAM 16GB DDR4';
+UPDATE products SET image_url = '/assets/img/products/ram-32gb-ddr5.jpg'          WHERE name = 'Memoria RAM 32GB DDR5';
+
+UPDATE products SET image_url = '/assets/img/products/ssd-nvme-1tb.jpg'           WHERE name = 'SSD NVMe 1TB';
+UPDATE products SET image_url = '/assets/img/products/hdd-2tb.jpg'                WHERE name LIKE 'Disco rigido HDD 2TB';
+
+UPDATE products SET image_url = '/assets/img/products/teclado-mecanico-rgb.jpg'   WHERE name LIKE 'Teclado mecanico RGB';
+UPDATE products SET image_url = '/assets/img/products/mouse-gamer-16000-dpi.jpg'  WHERE name = 'Mouse gamer 16000 DPI';
+UPDATE products SET image_url = '/assets/img/products/monitor-24-144hz.jpg'       WHERE name = 'Monitor 24" 144Hz';
+
+UPDATE products SET image_url = '/assets/img/products/auriculares-gamer-71.jpg'   WHERE name = 'Auriculares gamer 7.1';
+UPDATE products SET image_url = '/assets/img/products/mousepad-xl.jpg'            WHERE name = 'Mousepad XL';
+UPDATE products SET image_url = '/assets/img/products/fuente-650w-bronze.jpg'     WHERE name LIKE 'Fuente de alimentacin 650W 80+ Bronze';

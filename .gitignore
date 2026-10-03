@@ -20,3 +20,6 @@ Thumbs.db
 # IDE / editor files
 .vscode/
 .idea/
+
+# Resultados de búsqueda generados por PHP
+/storage/

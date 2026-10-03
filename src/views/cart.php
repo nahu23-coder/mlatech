@@ -48,8 +48,16 @@ if (!empty($_SESSION['cart'])) {
         <?php foreach ($items as $item): $p = $item['producto']; ?>
           <tr>
             <td>
-              <span class="me-2"><?= htmlspecialchars($p['category_icon']) ?></span>
-              <?= htmlspecialchars($p['name']) ?>
+              <div class="d-flex align-items-center gap-3">
+                <?php if (!empty($p['image_url'])): ?>
+                  <div class="cart-thumb">
+                    <img src="<?= htmlspecialchars($p['image_url']) ?>" alt="<?= htmlspecialchars($p['name']) ?>" loading="lazy">
+                  </div>
+                <?php else: ?>
+                  <div class="cart-thumb no-image"><?= htmlspecialchars($p['category_icon']) ?></div>
+                <?php endif; ?>
+                <span><?= htmlspecialchars($p['name']) ?></span>
+              </div>
             </td>
             <td><?= htmlspecialchars($p['category_name']) ?></td>
             <td>$ <?= number_format($p['price'], 0, ',', '.') ?></td>

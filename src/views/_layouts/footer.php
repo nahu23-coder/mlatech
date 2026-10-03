@@ -1,4 +1,4 @@
-  </main>
+</main>
 
   <footer class="site-footer">
     <div class="container d-flex flex-column flex-md-row justify-content-between align-items-center gap-2">
@@ -23,7 +23,7 @@
           <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Cerrar"></button>
         </div>
         <div class="modal-body">
-          <div class="product-thumb mb-3" id="pmIcon" style="font-size:4rem; border-radius:.5rem;">📦</div>
+          <div class="product-thumb mb-3" id="pmIcon" style="font-size:4rem; border-radius:.5rem; height:260px;">📦</div>
           <span class="badge badge-stock mb-2" id="pmCategory">Categoría</span>
           <p id="pmDescription" class="text-secondary"></p>
           <p class="price fs-4" id="pmPrice">$ 0</p>
@@ -49,7 +49,19 @@
       document.getElementById('pmCategory').textContent = card.dataset.category;
       document.getElementById('pmDescription').textContent = card.dataset.description;
       document.getElementById('pmPrice').textContent = '$ ' + Number(card.dataset.price).toLocaleString('es-AR');
-      document.getElementById('pmIcon').textContent = card.dataset.icon || '📦';
+      const pmIcon = document.getElementById('pmIcon');
+      const emoji  = card.dataset.icon || '📦';
+      pmIcon.classList.remove('has-image');
+      pmIcon.textContent = emoji;                       // emoji por defecto
+      if (card.dataset.image) {
+        const img = new Image();
+        img.alt = card.dataset.name;
+        img.onload = () => {                            // solo reemplaza el emoji si la foto cargó
+          pmIcon.classList.add('has-image');
+          pmIcon.replaceChildren(img);
+        };
+        img.src = card.dataset.image;
+      }
       document.getElementById('pmQty').value = 1;
 
       const modal = bootstrap.Modal.getOrCreateInstance(document.getElementById('productModal'));

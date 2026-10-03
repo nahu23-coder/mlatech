@@ -164,13 +164,53 @@ a {
 
 /* ---------- Productos ---------- */
 .product-thumb {
-  height: 150px;
+  height: 180px;
   display: flex;
   align-items: center;
   justify-content: center;
   font-size: 3rem;
   background: rgba(212, 175, 55, .05);
   border-bottom: 1px solid rgba(212, 175, 55, .15);
+  border-radius: var(--bs-card-inner-border-radius) var(--bs-card-inner-border-radius) 0 0;
+  overflow: hidden;
+}
+
+/* Con foto: fondo blanco (las fotos de producto vienen con fondo blanco) y la foto
+   entera, centrada y con aire alrededor, sin recortarse */
+.product-thumb.has-image {
+  background: #fff;
+  padding: .75rem;
+}
+
+.product-thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+/* Miniatura del carrito */
+.cart-thumb {
+  width: 64px;
+  height: 64px;
+  flex: 0 0 64px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4px;
+  border-radius: .5rem;
+  overflow: hidden;
+  background: #fff;
+  font-size: 1.75rem;
+}
+
+.cart-thumb.no-image {
+  background: rgba(212, 175, 55, .08);
+}
+
+.cart-thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
 }
 
 .price {
@@ -308,4 +348,3 @@ a {
   padding: 0 1rem;
   font-weight: 600;
 }
-
