@@ -17,7 +17,6 @@ CREATE TABLE IF NOT EXISTS users (
 CREATE TABLE IF NOT EXISTS categories (
     id         CHAR(36)     NOT NULL DEFAULT (UUID()),
     name       VARCHAR(50)  NOT NULL,
-    icon       VARCHAR(10)  NULL, -- emoji que se muestra en la card (ej: 🧠)
     created_at TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
 
@@ -57,13 +56,13 @@ CREATE TABLE IF NOT EXISTS contact_messages (
 );
 
 -- Categorías de ejemplo (coinciden con las cards del home)
-INSERT INTO categories (name, icon) VALUES
-    ('Procesadores', '🧠'),
-    ('Placas de video', '🖥️'),
-    ('Memorias RAM', '💾'),
-    ('Almacenamiento', '🗄️'),
-    ('Periféricos', '⌨️'),
-    ('Accesorios', '🎧');
+INSERT INTO categories (name) VALUES
+    ('Procesadores'),
+    ('Placas de video'),
+    ('Memorias RAM'),
+    ('Almacenamiento'),
+    ('Periféricos'),
+    ('Accesorios');
 
 -- Catálogo de ejemplo (coincide con lo que se ve en el home y en /productos)
 INSERT INTO products (category_id, name, description, price, stock, image_url) VALUES

@@ -1,4 +1,4 @@
-# Proyecto Base - PDISC 7° Año 4° División
+# Proyecto Base -  7° Año 4° División
 
 Hola mundo
 Este es un proyecto base en PHP pensado para que los alumnos trabajen con una aplicación simple de autenticación. Incluye:

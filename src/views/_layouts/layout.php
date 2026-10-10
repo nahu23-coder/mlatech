@@ -60,7 +60,7 @@ $paginaActual = basename($_SERVER['SCRIPT_NAME']);
         </ul>
 
         <form action="/src/views/products.php" method="GET" class="d-flex me-2" role="search">
-          <input type="search" name="q" class="form-control form-control-sm" placeholder="Buscar productos..."
+          <input type="search" name="q" id="searchInput" class="form-control form-control-sm" placeholder="Buscar productos..." autocomplete="off"
                  value="<?= htmlspecialchars($_GET['q'] ?? '') ?>">
         </form>
 

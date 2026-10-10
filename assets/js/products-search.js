@@ -1,21 +1,26 @@
 /**
- * Buscador de productos.
+ * Búsqueda de productos (página Productos).
  *
- * Flujo:
- *   input / chip de categoría
- *     -> fetch a search.php (PHP hace la query y escribe el .json)
- *     -> fetch del .json
- *     -> JS dibuja las cards
+ * Hay UNA sola barra de búsqueda: la de la navbar (#searchInput), que está en todas las páginas.
+ *   - En las otras páginas, al apretar Enter navega a products.php?q=...
+ *   - Acá, busca en vivo sin recargar y mantiene la URL igual a lo que dice la barra.
+ *
+ * Flujo: input / Enter / chip -> fetch a search.php (PHP hace la query y responde JSON) -> JS dibuja las cards.
  */
 (() => {
-  const input      = document.getElementById('searchInput');
-  const chips      = document.querySelectorAll('#filterChips .filter-chip');
-  const grid       = document.getElementById('productsGrid');
-  const noResults  = document.getElementById('noResults');
+  const input     = document.getElementById('searchInput');           // barra de la navbar
+  const form      = input ? input.closest('form') : null;
+  const chips     = document.querySelectorAll('#filterChips .filter-chip');
+  const grid      = document.getElementById('productsGrid');
+  const noResults = document.getElementById('noResults');
 
-  let categoriaActiva = grid.dataset.categoriaInicial || '';
-  let debounceTimer   = null;
-  let requestId       = 0; // para ignorar respuestas viejas si el usuario sigue escribiendo
+  // Estado inicial = lo que dice la URL (la barra ya viene con el valor puesto por PHP)
+  const urlParams = new URLSearchParams(location.search);
+  let categoriaActiva = urlParams.get('categoria') || '';
+  if (input) input.value = urlParams.get('q') || '';
+
+  let debounceTimer = null;
+  let controller    = null; // para cancelar la búsqueda anterior si el usuario sigue escribiendo
 
   // ---------- Dibujo ----------
   function formatPrecio(n) {
@@ -91,35 +96,40 @@
     noResults.classList.toggle('d-none', productos.length > 0);
   }
 
+  // ---------- URL: siempre refleja lo que dice la barra ----------
+  function actualizarURL(texto, categoria) {
+    const params = new URLSearchParams();
+    if (texto)     params.set('q', texto);
+    if (categoria) params.set('categoria', categoria);
+    const qs = params.toString();
+    history.replaceState(null, '', location.pathname + (qs ? '?' + qs : ''));
+  }
+
   // ---------- Búsqueda ----------
   async function buscar() {
-    const miId      = ++requestId;
-    const texto     = input.value.trim();
+    const texto     = input ? input.value.trim() : '';
     const categoria = categoriaActiva;
 
+    actualizarURL(texto, categoria);
+
+    if (controller) controller.abort();               // cancela la búsqueda anterior
+    controller = new AbortController();
+    const miController = controller;
+
     try {
-      // 1) PHP hace la query y genera el .json
+      // PHP hace la query y responde el JSON directamente (no se guarda en disco)
       const params = new URLSearchParams({ q: texto, categoria });
-      const res    = await fetch('/src/controllers/products/search.php?' + params);
+      const res    = await fetch('/src/controllers/products/search.php?' + params, { signal: miController.signal });
       const raw    = await res.text();
-      let meta;
-      try { meta = JSON.parse(raw); }
+
+      let data;
+      try { data = JSON.parse(raw); }
       catch { throw new Error('search.php devolvió HTTP ' + res.status + ' y no es JSON: ' + raw.slice(0, 200)); }
-      if (!meta.success) throw new Error(meta.error || 'Error en la búsqueda');
-      if (miId !== requestId) return; // ya hay una búsqueda más nueva
+      if (!data.success) throw new Error(data.error || 'Error en la búsqueda');
 
-      // 2) Leemos el .json (el ?t= evita que el navegador use una copia cacheada)
-      const jsonRes = await fetch(meta.file + '?t=' + Date.now(), { cache: 'no-store' });
-      if (!jsonRes.ok) throw new Error('No se pudo leer ' + meta.file + ' (HTTP ' + jsonRes.status + ')');
-      const data    = await jsonRes.json();
-
-      // El archivo es compartido por la sesión: si es de otra búsqueda, esa se encarga de dibujar
-      if (miId !== requestId || data.query !== texto || data.categoria !== categoria) return;
-
-      // 3) Dibujamos
       dibujar(data.products);
     } catch (err) {
-      if (miId !== requestId) return;
+      if (err.name === 'AbortError') return;          // fue reemplazada por una búsqueda más nueva
       console.error('[búsqueda]', err);
       grid.replaceChildren();
       noResults.textContent = 'No se pudieron cargar los productos: ' + err.message;
@@ -128,16 +138,29 @@
   }
 
   // ---------- Eventos ----------
-  input.addEventListener('input', () => {
-    clearTimeout(debounceTimer);
-    debounceTimer = setTimeout(buscar, 250); // espera a que termine de tipear
-  });
+  if (input) {
+    input.addEventListener('input', () => {
+      clearTimeout(debounceTimer);
+      debounceTimer = setTimeout(buscar, 250);        // espera a que termine de tipear
+    });
+    input.addEventListener('search', () => {          // la "x" de borrar del input type=search
+      clearTimeout(debounceTimer);
+      buscar();
+    });
+  }
+
+  if (form) {
+    form.addEventListener('submit', (e) => {          // Enter: busca acá, sin recargar la página
+      e.preventDefault();
+      clearTimeout(debounceTimer);
+      buscar();
+    });
+  }
 
   chips.forEach(chip => {
     chip.addEventListener('click', () => {
-      chips.forEach(c => c.classList.remove('active'));
-      chip.classList.add('active');
       categoriaActiva = chip.dataset.categoria;
+      chips.forEach(c => c.classList.toggle('active', c === chip));
       buscar();
     });
   });
